@@ -1,4 +1,4 @@
-已知现在有七种主要的PII Types:
+It is known that there are currently seven main types of PII (Personally Identifiable Information):
 (1)NAME_STUDENT - The full or partial name of a student that is not necessarily the author of the essay. This excludes instructors, authors, and other person names.
 (2)EMAIL - A student’s email address.
 (3)USERNAME - A student's username on any platform.
@@ -6,13 +6,21 @@
 (5)PHONE_NUM - A phone number associated with a student.
 (6)URL_PERSONAL - A URL that might be used to identify a student.
 (7)STREET_ADDRESS - A full or partial street address that is associated with the student, such as their home address.
-同时,Token labels are presented in BIO (Beginning, Inner, Outer) format. The PII type is prefixed with “B-” when it is the beginning of an entity. If the token is a continuation of an entity, it is prefixed with “I-”. Tokens that are not PII are labeled “O”. 因此标签实际上为形如B-NAME_STUDENT, I-USERNAME.
-我现在要你生成一段单词数约为400词的复杂英文文本，文本中包含上面的各种可能的标签内容，其中文本按照空格来划分tokenizer。
-文本示例：
-My name is Zihan Luo, and I am a resourceful and creative individual with a passion for pushing the boundaries of possibility. From my humble beginnings in a small village in China, I embarked on a life-changing journey that has brought me to where I am today, living at 768 North Main Street. Growing up, I was fascinated by the intricate workings of the world around me. This fascination led me to pursue a degree in engineering, where I excelled in both theoretical and practical aspects of the field. However, I soon realized that my true calling lay in the realm of entrepreneurship. With a burning desire to make a difference, I left the comfort of my academic pursuits and ventured into the dynamic world of business. I started a small tech company with a group of like-minded individuals, where we spent countless hours brainstorming, innovating, and working tirelessly to bring our ideas to life. Through sheer determination and unwavering persistence, our company grew from a humble startup to a thriving enterprise, gaining recognition for its groundbreaking products and services. I am proud of the impact we have made in our industry, and I am grateful for the opportunities that have come my way. Despite the success I have achieved, I remain grounded and committed to my values. I believe that true success lies in making a positive contribution to society. I actively participate in philanthropic endeavors, supporting causes that are close to my heart, such as education, environmental conservation, and poverty alleviation. I am always eager to connect with like-minded individuals who share my passion for innovation and making a difference. Feel free to reach out to me via email at zihan.luo@outlook.edu or by phone at (92) 95376-4896. Let us collaborate and work together to create a better future for all.
-标签示例：
-['O', 'O', 'O', 'B-NAME_STUDENT', 'I-NAME_STUDENT', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'B-STREET_ADDRESS', 'I-STREET_ADDRESS', 'I-STREET_ADDRESS', 'I-STREET_ADDRESS', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'B-EMAIL', 'O', 'O', 'O', 'O', 'B-PHONE_NUM', 'I-PHONE_NUM', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']
-下面请你生成文本并且返回标签，生成的文本需要涵盖上面所有可能的标签，只需要返回文本和标签，不需要废话。
-返回格式：
-text:{text}
-label:{label}
+
+At the same time,token labels are presented in BIO (Beginning, Inner, Outer) format. The PII type is prefixed with “B-” when it is the beginning of an entity. If the token is a continuation of an entity, it is prefixed with “I-”. Tokens that are not PII are labeled “O”, which means labels are like "B-NAME_STUDENT", "I-USERNAME". Thus, we have 15 kinds of labels in total (7 * 2 + 1).
+
+I now need you to generate a complex English text of about 1000 words. The text should include various possible labels as mentioned above, and it should be tokenized as example below. Attention: commas, periods, and other connecting symbols are all counted as separate tokens.
+
+text example：
+Design Thinking for innovation reflexion-Avril 2021-Nathalie Sylla\n\nChallenge & selection\n\nThe tool I use to help all stakeholders finding their way through the complexity of a project is the  mind map.\n\nWhat exactly is a mind map?
+token example:
+["Design","Thinking","for","innovation","reflexion","-","Avril","2021","-","Nathalie","Sylla","\n\n","Challenge","&","selection","\n\n","The","tool","I","use","to","help","all","stakeholders","finding","their","way","through","the","complexity","of","a","project","is","the"," ","mind","map",".","\n\n","What","exactly","is","a","mind","map","?"]
+label example：
+["O","O","O","O","O","O","O","O","O","B-NAME_STUDENT","I-NAME_STUDENT","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O"]
+
+Please generate a text and return its labels. The text should be about diverse topics and cover all the possible tags mentioned above. Also, the position distribution of labels should be average. Only the text and labels are required, no need for extra explanations.
+
+Return format：
+text: {generated_text}
+token: {tokens}
+label: {corresponding_labels}
