@@ -17,12 +17,12 @@ from seqeval.metrics import recall_score, f1_score, precision_score
 
 class CFG:
     MAX_LENGTH = 512
-    MODEL_NAME = "microsoft/deberta-v3-base"
+    MODEL_NAME = "microsoft/deberta-v3-small"
     FREEZE_EMBEDDINGS = False
     FREEZE_LAYERS = 0
     VER = 1
     OUTPUT_DIR = f"Model-{VER}"
-    TRAIN_FILE_PATH = ""
+    TRAIN_FILE_PATH = "./combined_dataset/origin_moth_0125.json"
 
 
 print("... Load Dataset ...")
@@ -183,12 +183,16 @@ args = TrainingArguments(
     output_dir=CFG.OUTPUT_DIR,
     fp16=True,
     learning_rate=2e-5,
-    num_train_epochs=1,
-    per_device_train_batch_size=4,
-    per_device_eval_batch_size=4,
+    num_train_epochs=2,
+    per_device_train_batch_size=2,
+    per_device_eval_batch_size=2,
     report_to="none",
-    evaluation_strategy="epoch",
-    save_strategy="epoch",
+    gradient_accumulation_steps=8,
+    logging_steps=100,
+    evaluation_strategy="steps",
+    eval_steps=100,
+    save_strategy="steps",
+    save_steps=100,
     save_total_limit=3,
     overwrite_output_dir=True,
     load_best_model_at_end=True,
