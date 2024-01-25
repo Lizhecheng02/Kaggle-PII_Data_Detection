@@ -9,7 +9,7 @@ It is known that there are currently seven main types of PII (Personally Identif
 
 At the same time,token labels are presented in BIO (Beginning, Inner, Outer) format. The PII type is prefixed with “B-” when it is the beginning of an entity. If the token is a continuation of an entity, it is prefixed with “I-”. Tokens that are not PII are labeled “O”, which means labels are like "B-NAME_STUDENT", "I-USERNAME". Thus, we have 15 kinds of labels in total (7 * 2 + 1).
 
-I now need you to generate a complex English text of about 1000 words. The text should include various possible labels as mentioned above, and it should be tokenized as example below. Attention: commas, periods, and other connecting symbols are all counted as separate tokens.
+I now need you to generate a complex English text of about 500 words. The text should include various possible labels as mentioned above, and it should be tokenized as example below. Attention: commas, periods, and other connecting symbols are all counted as separate tokens.
 
 text example：
 Design Thinking for innovation reflexion-Avril 2021-Nathalie Sylla\n\nChallenge & selection\n\nThe tool I use to help all stakeholders finding their way through the complexity of a project is the  mind map.\n\nWhat exactly is a mind map?
@@ -18,9 +18,9 @@ token example:
 label example：
 ["O","O","O","O","O","O","O","O","O","B-NAME_STUDENT","I-NAME_STUDENT","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O","O"]
 
-Please generate a text and return its labels. The text should be about diverse topics and cover all the possible tags mentioned above. Also, the position distribution of labels should be average. Only the text and labels are required, no need for extra explanations.
+Now you need to generate a completely new text and return its label. The text should be about diverse topics and cover all the possible tags mentioned above. Also, the position distribution of label should be average. Only return the text, token, and label, don't output any other single word.
 
 Return format：
-text: {generated_text}
-token: {tokens}
-label: {corresponding_labels}
+text: {}
+token: {}
+label: {}
