@@ -16,16 +16,17 @@ from seqeval.metrics import recall_score, f1_score, precision_score
 
 
 class CFG:
-    MAX_LENGTH = 768
+    MAX_LENGTH = 512
     MODEL_NAME = "microsoft/deberta-v3-base"
     FREEZE_EMBEDDING = False
     FREEZE_LAYERS = 0
     VER = 1
     OUTPUT_DIR = f"Model-{VER}"
+    TRAIN_FILE_PATH = ""
 
 
 print("... Load Dataset ...")
-data = json.load(open("./kaggle_dataset/competition/train.json"))
+data = json.load(open(CFG.TRAIN_FILE_PATH))
 print(len(data))
 print(data[0].keys())
 
