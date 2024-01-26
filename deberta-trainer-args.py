@@ -179,7 +179,7 @@ def train(args):
     training_args = TrainingArguments(
         output_dir=args.output_dir,
         fp16=True,
-        warmup_steps=100,
+        warmup_steps=50,
         learning_rate=args.learning_rate,
         num_train_epochs=args.num_train_epochs,
         per_device_train_batch_size=args.per_device_train_batch_size,
@@ -211,7 +211,7 @@ def train(args):
     trainer.train()
 
     print("... Save Model ...")
-    trainer.save_model(args.output_dir)
+    trainer.save_model(f"{args.output_dir}/best")
     torch.cuda.empty_cache()
 
 
