@@ -175,19 +175,20 @@ if CFG.FREEZE_LAYERS > 0:
         for param in layer.parameters():
             param.requires_grad = False
 
-final_ds = ds.train_test_split(test_size=0.2, seed=42)
+final_ds = ds.train_test_split(test_size=0.15, seed=42)
 final_ds
 
 print("... Training ...")
 args = TrainingArguments(
     output_dir=CFG.OUTPUT_DIR,
     fp16=True,
+    warmup_steps=50,
     learning_rate=2e-5,
     num_train_epochs=2,
-    per_device_train_batch_size=2,
+    per_device_train_batch_size=1,
     per_device_eval_batch_size=2,
     report_to="none",
-    gradient_accumulation_steps=8,
+    gradient_accumulation_steps=16,
     logging_steps=100,
     evaluation_strategy="steps",
     eval_steps=100,
