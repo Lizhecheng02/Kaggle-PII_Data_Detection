@@ -176,7 +176,7 @@ def train(args):
     print(final_ds)
 
     print("... Training ...")
-    args = TrainingArguments(
+    training_args = TrainingArguments(
         output_dir=args.output_dir,
         fp16=True,
         warmup_steps=100,
@@ -201,7 +201,7 @@ def train(args):
     )
     trainer = Trainer(
         model=model,
-        args=args,
+        args=training_args,
         train_dataset=final_ds["train"],
         eval_dataset=final_ds["test"],
         data_collator=collator,
