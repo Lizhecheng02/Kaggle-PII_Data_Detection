@@ -2,6 +2,7 @@ from seqeval.metrics import recall_score, f1_score, precision_score
 from functools import partial
 from itertools import chain
 from datasets import Dataset, features
+import os
 import json
 import torch
 from transformers import (
@@ -213,6 +214,15 @@ def train(args):
     print("... Save Model ...")
     trainer.save_model(f"{args.output_dir}/best")
     torch.cuda.empty_cache()
+
+    def delete_optimizer_files(directory):
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if file == "optimizer.pt":
+                    os.remove(os.path.join(root, file))
+                    print(f"Deleted: {os.path.join(root, file)}")
+
+    delete_optimizer_files(args.output_dir)
 
 
 if __name__ == "__main__":
