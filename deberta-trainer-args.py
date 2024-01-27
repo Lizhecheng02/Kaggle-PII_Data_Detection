@@ -2,6 +2,7 @@ from seqeval.metrics import recall_score, f1_score, precision_score
 from functools import partial
 from itertools import chain
 from datasets import Dataset, features
+from tqdm import tqdm
 import os
 import json
 import torch
@@ -175,6 +176,66 @@ def train(args):
         seed=args.random_seed
     )
     print(final_ds)
+
+    print("... Analyzing Training Dataset ...")
+
+    train_ds = final_ds["train"].to_pandas()
+
+    have_label = 0
+    no_label = 0
+    label_dict = {}
+
+    for idx, row in tqdm(train_ds.iterrows(), total=len(train_ds)):
+        labels = row["provided_labels"].tolist()
+
+        all_labels_are_O = all(label == "O" for label in labels)
+        if all_labels_are_O:
+            no_label += 1
+        else:
+            have_label += 1
+
+        for label in labels:
+            if label in label_dict:
+                label_dict[label] += 1
+            else:
+                label_dict[label] = 1
+
+    sorted_keys = sorted(label_dict.keys())
+    for key in sorted_keys:
+        print(f"{key}: {label_dict[key]}")
+
+    print("Number of training examples with no label:", no_label)
+    print("Number of training examples with labels:", have_label)
+
+    print("... Analyzing Test Dataset ...")
+
+    test_ds = final_ds["test"].to_pandas()
+
+    have_label = 0
+    no_label = 0
+    label_dict = {}
+
+    for idx, row in tqdm(test_ds.iterrows(), total=len(test_ds)):
+        labels = row["provided_labels"].tolist()
+
+        all_labels_are_O = all(label == "O" for label in labels)
+        if all_labels_are_O:
+            no_label += 1
+        else:
+            have_label += 1
+
+        for label in labels:
+            if label in label_dict:
+                label_dict[label] += 1
+            else:
+                label_dict[label] = 1
+
+    sorted_keys = sorted(label_dict.keys())
+    for key in sorted_keys:
+        print(f"{key}: {label_dict[key]}")
+
+    print("Number of test examples with no label:", no_label)
+    print("Number of test examples with labels:", have_label)
 
     print("... Training ...")
     training_args = TrainingArguments(
