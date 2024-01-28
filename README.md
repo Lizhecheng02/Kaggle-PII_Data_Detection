@@ -21,10 +21,14 @@ export KAGGLE_KEY="your_api_key"
 
 ```bash
 cd combined_dataset
-sudo apt install unzip
-```
-
-```bash
 kaggle datasets download -d lizhecheng/pii-data-detection-dataset
 unzip pii-data-detection-dataset.zip
 ```
+
+```bash
+cd kaggle_dataset
+cd competition
+kaggle competitions download -c pii-detection-removal-from-educational-data
+unzip pii-detection-removal-from-educational-data.zip
+```
+
