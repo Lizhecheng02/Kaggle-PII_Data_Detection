@@ -20,9 +20,11 @@ export KAGGLE_KEY="your_api_key"
 #### 2. Download Dataset
 
 ```bash
-cd combined_dataset
+cd kaggle_dataset
 kaggle datasets download -d lizhecheng/pii-data-detection-dataset
 unzip pii-data-detection-dataset.zip
+kaggle datasets download -d lizhecheng/piidd-reliable-cv
+unzip piidd-reliable-cv.zip
 ```
 
 ```bash
