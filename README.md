@@ -28,7 +28,6 @@ unzip piidd-reliable-cv.zip
 ```
 
 ```bash
-cd kaggle_dataset
 cd competition
 kaggle competitions download -c pii-detection-removal-from-educational-data
 unzip pii-detection-removal-from-educational-data.zip
