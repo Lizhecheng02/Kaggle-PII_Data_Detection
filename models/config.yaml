@@ -4,10 +4,10 @@ method: random
 name: sweep
 metric:
   goal: maximize
-  name: val_f5
+  name: eval/f5
 parameters:
   lr: 
-    values: [4e-6, 8e-6, 1e-5]
+    values: [4e-6, 6e-6]
   stride:
     values: [0]
   max_length:
