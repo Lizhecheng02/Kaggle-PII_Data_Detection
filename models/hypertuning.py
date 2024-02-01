@@ -458,7 +458,7 @@ def main():
         eval_steps=100,
         save_strategy="steps",
         save_steps=100,
-        save_total_limit=1,
+        save_total_limit=10,
         overwrite_output_dir=True,
         load_best_model_at_end=True,
         lr_scheduler_type="linear",
@@ -466,7 +466,7 @@ def main():
         greater_is_better=True,
         weight_decay=0.01,
         save_only_model=True,
-        neftune_noise_alpha=0.1
+        neftune_noise_alpha=0.05
     )
 
     model = AutoModelForTokenClassification.from_pretrained(
