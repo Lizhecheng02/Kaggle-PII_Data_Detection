@@ -28,8 +28,27 @@ unzip piidd-reliable-cv.zip
 ```
 
 ```bash
+cd kaggle_dataset
 cd competition
 kaggle competitions download -c pii-detection-removal-from-educational-data
 unzip pii-detection-removal-from-educational-data.zip
+```
+
+#### 3. Simple Deberta
+
+```bash
+cd kaggle_notebook
+run train-0.3-validation.ipynb
+```
+
+
+#### 4. Run Wandb Sweep
+```bash
+cd models
+wandb sweep --project PII config.yaml
+```
+
+```bash
+wandb agent xxx/PII/xxxxxxxx
 ```
 
