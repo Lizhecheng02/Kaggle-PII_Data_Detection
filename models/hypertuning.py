@@ -447,7 +447,7 @@ def main():
         output_dir=OUTPUT_DIR,
         fp16=True,
         gradient_accumulation_steps=16,
-        logging_steps=50,
+        logging_steps=100,
         warmup_ratio=0.05,
         learning_rate=lr,          # tune
         num_train_epochs=3,
