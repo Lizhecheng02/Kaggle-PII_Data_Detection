@@ -1,0 +1,22 @@
+# config.yaml
+program: hypertuning.py
+method: random
+name: sweep
+metric:
+  goal: maximize
+  name: val_f5
+parameters:
+  lr: 
+    values: [4e-6, 8e-6, 1e-5]
+  stride:
+    values: [0]
+  max_length:
+    values: [768, 1024]
+  awp_lr:
+    values: [0.1]
+  awp_eps:
+    values: [1e-4]
+  awp_start_epoch:
+    values: [0.5]
+  ce_weight:
+    values: [50]
