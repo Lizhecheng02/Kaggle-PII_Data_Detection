@@ -8,7 +8,7 @@ from transformers.trainer_callback import (
     ProgressCallback,
     TrainerCallback,
     TrainerControl,
-    TrainerState,
+    TrainerState
 )
 from copy import deepcopy
 from torch.utils.data import Dataset, DataLoader
@@ -60,8 +60,10 @@ class EMA:
                 ema_v.copy_(update_fn(ema_v, model_v))
 
     def update(self, model):
-        self._update(model, update_fn=lambda e,
-                     m: self.decay * e + (1. - self.decay) * m)
+        self._update(
+            model,
+            update_fn=lambda e, m: self.decay * e + (1. - self.decay) * m
+        )
 
     def set(self, model):
         self._update(model, update_fn=lambda e, m: m)
