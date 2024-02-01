@@ -10,3 +10,4 @@ kaggle
 protobuf
 accelerate
 openai
+wandb
