@@ -312,7 +312,7 @@ class CustomTrainer(Trainer):
         return loss.detach() / self.args.gradient_accumulation_steps
 
 
-data = json.open("../kaggle_dataset/test_split.json")
+data = json.load(open("../kaggle_dataset/test_split.json"))
 all_labels = sorted(list(set(chain(*[x["labels"] for x in data]))))
 label2id = {l: i for i, l in enumerate(all_labels)}
 id2label = {v: k for k, v in label2id.items()}
