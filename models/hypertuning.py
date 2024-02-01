@@ -465,7 +465,8 @@ def main():
         metric_for_best_model="f5",
         greater_is_better=True,
         weight_decay=0.01,
-        save_only_model=True
+        save_only_model=True,
+        neftune_noise_alpha=0.1
     )
 
     model = AutoModelForTokenClassification.from_pretrained(
