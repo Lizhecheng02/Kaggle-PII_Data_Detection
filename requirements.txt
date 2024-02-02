@@ -11,3 +11,4 @@ protobuf
 accelerate
 openai
 wandb
+faker
