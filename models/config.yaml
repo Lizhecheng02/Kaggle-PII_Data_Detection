@@ -7,16 +7,16 @@ metric:
   name: eval/f5
 parameters:
   lr: 
-    values: [4e-6, 6e-6]
+    values: [4e-6, 3e-6, 6e-6]
   stride:
     values: [0]
   max_length:
-    values: [768, 1024]
+    values: [1024, 768]
   awp_lr:
     values: [0.1]
   awp_eps:
     values: [1e-4]
   awp_start_epoch:
-    values: [0.5]
+    values: [0.5, 1.0]
   ce_weight:
     values: [50]
