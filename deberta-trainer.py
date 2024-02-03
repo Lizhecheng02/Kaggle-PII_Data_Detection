@@ -16,8 +16,8 @@ from seqeval.metrics import recall_score, f1_score, precision_score
 
 
 class CFG:
-    MAX_LENGTH = 512
-    MODEL_NAME = "microsoft/deberta-v3-small"
+    MAX_LENGTH = 768
+    MODEL_NAME = "microsoft/deberta-v3-large"
     FREEZE_EMBEDDINGS = False
     FREEZE_LAYERS = 0
     VER = 1
@@ -200,7 +200,8 @@ args = TrainingArguments(
     lr_scheduler_type="cosine",
     metric_for_best_model="f1",
     greater_is_better=True,
-    weight_decay=0.001
+    weight_decay=0.001,
+    save_only_model=True
 )
 trainer = Trainer(
     model=model,
