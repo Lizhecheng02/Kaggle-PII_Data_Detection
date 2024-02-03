@@ -1,0 +1,20 @@
+It is known that there are currently seven main types of PII (Personally Identifiable Information):
+(1) NAME_STUDENT - The full or partial name of a student that is not necessarily the author of the essay. This excludes instructors, authors, and other person names.
+(2) EMAIL - A student's email address.
+(3) USERNAME - A student's username on any platform.
+(4) ID_NUM - A number or sequence of characters that could be used to identify a student, such as a student ID or a social security number.
+(5) PHONE_NUM - A phone number associated with a student.
+(6) URL_PERSONAL - A URL that might be used to identify a student.
+(7) STREET_ADDRESS - A full or partial street address that is associated with the student, such as their home address.
+
+Now I will give you an article, and you need to complete the following tasks:
+(1) Add information related to the aforementioned seven tags into the article. This information must be relevant to individual students while still maintaining the article's coherence, fluidity, readability and core theme.
+(2) Replace the newly added relevant information with real data.
+(3) You only need to return the revised article; do not include any extraneous content before or after the article.
+(4) Enclose the newly added content with tags before and after, for example: [NAME_STUDENT]James Jones[NAME_STUDENT].
+(5) Suppose the original text already contains information related to the seven tags; you also need to enclose them with tags as per requirement (4).
+(6) The positional distribution of different labels should be average in the whole article.
+(7) Do not forcibly add a label, all content must be reasonable.
+(8) The article must not contain grammatical errors or misspellings.
+
+Article:
