@@ -466,7 +466,7 @@ def main():
         greater_is_better=True,
         weight_decay=0.01,
         save_only_model=True,
-        neftune_noise_alpha=0.05
+        neftune_noise_alpha=0.1
     )
 
     model = AutoModelForTokenClassification.from_pretrained(
