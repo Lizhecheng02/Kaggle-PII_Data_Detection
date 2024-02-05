@@ -243,6 +243,8 @@ class CustomTrainer(Trainer):
 
     def compute_loss(self, model, inputs, return_outputs=False):
         labels = inputs.pop("labels")
+        overflow_to_sample_mapping = inputs.pop("overflow_to_sample_mapping")
+        wids = inputs.pop("wids")
         # forward pass
         outputs = model(**inputs)
         logits = outputs.get("logits")
