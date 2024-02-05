@@ -283,10 +283,7 @@ class CustomTrainer(Trainer):
         """
         model.train()
         o_inputs = inputs.copy()
-        # inputs = self._prepare_inputs(inputs)
         inputs = self._prepare_inputs(inputs)
-      #  print("---" * 60)
-      #  print(inputs)
 
         with self.compute_loss_context_manager():
             loss = self.compute_loss(model, inputs)
@@ -545,11 +542,14 @@ def main():
     # hyper-parameters
     lr = wandb.config.lr
     max_length = wandb.config.max_length
+    ga_steps = wandb.config.gradient_accumulation_steps
+    batch_size = wandb.config.batch_size
     stride = wandb.config.stride
     awp_lr = wandb.config.awp_lr
     awp_eps = wandb.config.awp_eps
     awp_start_epoch = wandb.config.awp_start_epoch
     ce_weight = wandb.config.ce_weight
+    nna = wandb.config.neftune_noise_alpha
 
     # Tokenize texts, possibly generating more than one tokenized sample for each text
 
@@ -611,13 +611,13 @@ def main():
     args = TrainingArguments(
         output_dir=OUTPUT_DIR,
         fp16=True,
-        gradient_accumulation_steps=16,
+        gradient_accumulation_steps=ga_steps,
         logging_steps=100,
         warmup_ratio=0.05,
         learning_rate=lr,          # tune
         num_train_epochs=3,
-        per_device_train_batch_size=1,
-        per_device_eval_batch_size=1,
+        per_device_train_batch_size=batch_size,
+        per_device_eval_batch_size=batch_size,
         report_to="wandb",
         evaluation_strategy="steps",
         eval_steps=100,
@@ -631,7 +631,7 @@ def main():
         greater_is_better=True,
         weight_decay=0.01,
         save_only_model=True,
-        neftune_noise_alpha=0.1,
+        neftune_noise_alpha=nna,
         remove_unused_columns=False
     )
 
