@@ -16,7 +16,14 @@ from copy import deepcopy
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 from transformers import AutoModelForTokenClassification, DataCollatorForTokenClassification
-from transformers import AutoTokenizer, Trainer, TrainingArguments, TrainerCallback
+from transformers import (
+    AutoTokenizer,
+    Trainer,
+    TrainingArguments,
+    TrainerCallback,
+    get_polynomial_decay_schedule_with_warmup,
+    AdamW
+)
 from functools import partial
 from itertools import chain
 import yaml
@@ -39,7 +46,8 @@ train1 = pd.read_json("../kaggle_dataset/train_split.json")
 train2 = pd.read_json("../kaggle_dataset/pjm_gpt_2k_0126_fixed.json")
 train3 = pd.read_json("../kaggle_dataset/nb_mixtral-8x7b-v1.json")
 train4 = pd.read_json("../kaggle_dataset/darek_persuade_train_version3.json")
-train_df = pd.concat([train1, train2, train3, train4])
+train5 = pd.read_json("../kaggle_dataset/lzc_more_data_merged.json")
+train_df = pd.concat([train1, train2, train3, train4, train5])
 train_df = train_df.sample(frac=1, random_state=777)
 train_df.reset_index(drop=True, inplace=True)
 
@@ -645,6 +653,21 @@ def main():
         ignore_mismatched_sizes=True
     )
 
+    optimizer = AdamW(model.parameters(), lr=args.learning_rate)
+
+    gpu_count = torch.cuda.device_count()
+    print(f"Number of GPUs: {gpu_count}")
+
+    scheduler = get_polynomial_decay_schedule_with_warmup(
+        optimizer,
+        num_warmup_steps=25,
+        num_training_steps=args.num_train_epochs *
+        int(len(train_dataset) * 1.0 / gpu_count / args.per_device_train_batch_size /
+            args.gradient_accumulation_steps),
+        power=1.0,
+        lr_end=0.5e-6
+    )
+
     trainer = CustomTrainer(
         model=model,
         args=args,
@@ -660,7 +683,8 @@ def main():
         awp_lr=awp_lr,
         awp_eps=awp_eps,
         awp_start_epoch=awp_start_epoch,
-        ce_weight=ce_weight
+        ce_weight=ce_weight,
+        optimizers=(optimizer, scheduler)
     )
 
     trainer.train()
