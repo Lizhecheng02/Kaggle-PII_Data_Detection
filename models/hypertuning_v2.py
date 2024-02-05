@@ -537,7 +537,7 @@ def main():
     with open("./config_v2.yaml") as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
 
-    run = wandb.init(config=config)
+    wandb.init(config=config)
 
     # hyper-parameters
     lr = wandb.config.lr
@@ -609,7 +609,7 @@ def main():
     )
 
     args = TrainingArguments(
-        output_dir=OUTPUT_DIR,
+        output_dir=f"output/{wandb.run.id}",
         fp16=True,
         gradient_accumulation_steps=ga_steps,
         logging_steps=100,
