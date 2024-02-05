@@ -1,6 +1,6 @@
 # config.yaml
 program: hypertuning_v2.py
-method: random
+method: grid
 name: sweep
 metric:
   goal: maximize
