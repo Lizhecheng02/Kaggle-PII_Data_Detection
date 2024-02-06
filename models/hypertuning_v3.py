@@ -214,17 +214,15 @@ class AWP:
 class FocalLoss(nn.Module):
     def __init__(self, alpha=None, gamma=2.0, reduction="mean"):
         super(FocalLoss, self).__init__()
-        if alpha is None:
-            self.alpha = torch.ones(self.num_classes, device="cuda")
-        else:
-            self.alpha = alpha
+        self.alpha = alpha
         self.gamma = gamma
         self.reduction = reduction
 
     def forward(self, inputs, targets):
         BCE_loss = F.cross_entropy(
             inputs, targets,
-            reduction="none", weight=None
+            reduction="none",
+            weight=None
         )
         targets = targets.type(torch.long)
         at = self.alpha.gather(0, targets.data.view(-1))
