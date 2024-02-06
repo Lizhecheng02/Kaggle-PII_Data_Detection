@@ -65,7 +65,10 @@ reference_df = reference_df.reset_index().rename(columns={"index": "row_id"})
 reference_df = reference_df[["row_id", "document",
                              "token", "label", "token_str"]].copy()
 
+# 学习focal loss的参数
 weights = nn.Parameter(torch.tensor([1.0] * 13))
+if torch.cuda.is_available():
+    weights = weights.cuda()
 
 
 class EMA:
@@ -288,10 +291,10 @@ class CustomTrainer(Trainer):
         outputs = model(**inputs)
         logits = outputs.get("logits")
         # compute custom focal loss
-        weights = torch.tensor(
-            [self.focal_loss_alpha] * 12 + [0.1],
-            device=model.device
-        )
+        # weights = torch.tensor(
+        #     [self.focal_loss_alpha] * 12 + [0.1],
+        #     device=model.device
+        # )
         sm = torch.nn.Softmax(dim=-1)
         loss_fct = FocalLoss(gamma=2, weights=weights)
         loss = loss_fct(
@@ -684,7 +687,10 @@ def main():
         ignore_mismatched_sizes=True
     )
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
+    optimizer = torch.optim.AdamW(
+        [{"params": model.parameters()}, {"params": [weights]}],
+        lr=args.learning_rate
+    )
 
     gpu_count = torch.cuda.device_count()
     print(f"Number of GPUs: {gpu_count}")
