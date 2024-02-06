@@ -65,11 +65,6 @@ reference_df = reference_df.reset_index().rename(columns={"index": "row_id"})
 reference_df = reference_df[["row_id", "document",
                              "token", "label", "token_str"]].copy()
 
-# 学习focal loss的参数
-weights = nn.Parameter(torch.tensor([1.0] * 13))
-if torch.cuda.is_available():
-    weights = weights.cuda()
-
 
 class EMA:
     def __init__(self, model, decay=0.9):
@@ -216,6 +211,7 @@ class AWP:
         self.backup = {}
         self.backup_eps = {}
 
+
 # Something wrong with targets
 # class FocalLoss(nn.Module):
 #     def __init__(self, alpha=None, gamma=2.0, reduction="mean"):
@@ -291,10 +287,10 @@ class CustomTrainer(Trainer):
         outputs = model(**inputs)
         logits = outputs.get("logits")
         # compute custom focal loss
-        # weights = torch.tensor(
-        #     [self.focal_loss_alpha] * 12 + [0.1],
-        #     device=model.device
-        # )
+        weights = torch.tensor(
+            [self.focal_loss_alpha] * 12 + [0.1],
+            device=model.device
+        )
         sm = torch.nn.Softmax(dim=-1)
         loss_fct = FocalLoss(gamma=2, weights=weights)
         loss = loss_fct(
@@ -688,7 +684,7 @@ def main():
     )
 
     optimizer = torch.optim.AdamW(
-        [{"params": model.parameters()}, {"params": [weights]}],
+        [{"params": model.parameters()}],
         lr=args.learning_rate
     )
 
