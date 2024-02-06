@@ -24,6 +24,7 @@ from transformers import (
     get_polynomial_decay_schedule_with_warmup,
     AdamW
 )
+from focal_loss.focal_loss import FocalLoss
 from functools import partial
 from itertools import chain
 import yaml
@@ -210,31 +211,32 @@ class AWP:
         self.backup = {}
         self.backup_eps = {}
 
+# Something wrong with targets
+# class FocalLoss(nn.Module):
+#     def __init__(self, alpha=None, gamma=2.0, reduction="mean"):
+#         super(FocalLoss, self).__init__()
+#         self.alpha = alpha
+#         self.gamma = gamma
+#         self.reduction = reduction
 
-class FocalLoss(nn.Module):
-    def __init__(self, alpha=None, gamma=2.0, reduction="mean"):
-        super(FocalLoss, self).__init__()
-        self.alpha = alpha
-        self.gamma = gamma
-        self.reduction = reduction
+#     def forward(self, inputs, targets):
+#         BCE_loss = F.cross_entropy(
+#             inputs,
+#             targets,
+#             reduction="none",
+#             ignore_index=-100
+#         )
+#         targets = targets.type(torch.long)
+#         at = self.alpha.gather(0, targets.data.view(-1))
+#         pt = torch.exp(-BCE_loss)
+#         F_loss = at * (1 - pt) ** self.gamma * BCE_loss
 
-    def forward(self, inputs, targets):
-        BCE_loss = F.cross_entropy(
-            inputs, targets,
-            reduction="none",
-            weight=None
-        )
-        targets = targets.type(torch.long)
-        at = self.alpha.gather(0, targets.data.view(-1))
-        pt = torch.exp(-BCE_loss)
-        F_loss = at * (1 - pt) ** self.gamma * BCE_loss
-
-        if self.reduction == "mean":
-            return torch.mean(F_loss)
-        elif self.reduction == "sum":
-            return torch.sum(F_loss)
-        else:
-            return F_loss
+#         if self.reduction == "mean":
+#             return torch.mean(F_loss)
+#         elif self.reduction == "sum":
+#             return torch.sum(F_loss)
+#         else:
+#             return F_loss
 
 
 class CustomTrainer(Trainer):
@@ -253,7 +255,8 @@ class CustomTrainer(Trainer):
         preprocess_logits_for_metrics=None,
         awp_lr=0.1,
         awp_eps=1e-4,
-        awp_start_epoch=0.5
+        awp_start_epoch=0.5,
+        focal_loss_alpha=1.0
     ):
 
         super().__init__(
@@ -273,6 +276,7 @@ class CustomTrainer(Trainer):
         self.awp_lr = awp_lr
         self.awp_eps = awp_eps
         self.awp_start_epoch = awp_start_epoch
+        self.focal_loss_alpha = focal_loss_alpha
 
     def compute_loss(self, model, inputs, return_outputs=False):
         labels = inputs.pop("labels")
@@ -282,17 +286,16 @@ class CustomTrainer(Trainer):
         outputs = model(**inputs)
         logits = outputs.get("logits")
         # compute custom focal loss
-        alpha = torch.tensor([10.0] * 12 + [0.1], device=model.device)
-        focal_loss = FocalLoss(
-            alpha=alpha,
-            gamma=3.0,
-            reduction="mean"
+        weights = torch.tensor(
+            [self.focal_loss_alpha] * 12 + [0.1],
+            device=model.device
         )
-        loss = focal_loss(
-            logits.view(-1, self.model.config.num_labels),
+        sm = torch.nn.Softmax(dim=-1)
+        loss_fct = FocalLoss(gamma=2, weights=weights)
+        loss = loss_fct(
+            sm(logits.view(-1, self.model.config.num_labels)),
             labels.view(-1)
         )
-
         return (loss, outputs) if return_outputs else loss
 
     def training_step(self, model, inputs):
@@ -585,6 +588,7 @@ def main():
     awp_eps = wandb.config.awp_eps
     awp_start_epoch = wandb.config.awp_start_epoch
     nna = wandb.config.neftune_noise_alpha
+    fla = wandb.config.focal_loss_alpha
 
     # Tokenize texts, possibly generating more than one tokenized sample for each text
 
@@ -678,7 +682,7 @@ def main():
         ignore_mismatched_sizes=True
     )
 
-    optimizer = AdamW(model.parameters(), lr=args.learning_rate)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
 
     gpu_count = torch.cuda.device_count()
     print(f"Number of GPUs: {gpu_count}")
@@ -708,7 +712,8 @@ def main():
         awp_lr=awp_lr,
         awp_eps=awp_eps,
         awp_start_epoch=awp_start_epoch,
-        optimizers=(optimizer, scheduler)
+        optimizers=(optimizer, scheduler),
+        focal_loss_alpha=fla
     )
 
     trainer.train()
