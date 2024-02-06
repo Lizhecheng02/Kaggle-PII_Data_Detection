@@ -22,7 +22,5 @@ parameters:
     values: [1e-4]
   awp_start_epoch:
     values: [0.5, 1.0]
-  ce_weight:
-    values: [50]
   neftune_noise_alpha:
     values: [0.05]

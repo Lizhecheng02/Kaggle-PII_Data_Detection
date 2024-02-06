@@ -255,8 +255,7 @@ class CustomTrainer(Trainer):
         preprocess_logits_for_metrics=None,
         awp_lr=0.1,
         awp_eps=1e-4,
-        awp_start_epoch=0.5,
-        ce_weight=1
+        awp_start_epoch=0.5
     ):
 
         super().__init__(
@@ -276,7 +275,6 @@ class CustomTrainer(Trainer):
         self.awp_lr = awp_lr
         self.awp_eps = awp_eps
         self.awp_start_epoch = awp_start_epoch
-        self.ce_weight = ce_weight
 
     def compute_loss(self, model, inputs, return_outputs=False):
         labels = inputs.pop("labels")
@@ -588,7 +586,6 @@ def main():
     awp_lr = wandb.config.awp_lr
     awp_eps = wandb.config.awp_eps
     awp_start_epoch = wandb.config.awp_start_epoch
-    ce_weight = wandb.config.ce_weight
     nna = wandb.config.neftune_noise_alpha
 
     # Tokenize texts, possibly generating more than one tokenized sample for each text
@@ -713,7 +710,6 @@ def main():
         awp_lr=awp_lr,
         awp_eps=awp_eps,
         awp_start_epoch=awp_start_epoch,
-        ce_weight=ce_weight,
         optimizers=(optimizer, scheduler)
     )
 
