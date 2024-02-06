@@ -65,6 +65,8 @@ reference_df = reference_df.reset_index().rename(columns={"index": "row_id"})
 reference_df = reference_df[["row_id", "document",
                              "token", "label", "token_str"]].copy()
 
+weights = nn.Parameter(torch.tensor([1.0] * 13))
+
 
 class EMA:
     def __init__(self, model, decay=0.9):
@@ -573,7 +575,7 @@ def compute_metrics_v2(p, valid_df, reference_df, valid_dataset, id2label):
 
 def main():
     # Set up your default hyperparameters
-    with open("./config_v2.yaml") as file:
+    with open("./config_v3.yaml") as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
 
     wandb.init(config=config)
