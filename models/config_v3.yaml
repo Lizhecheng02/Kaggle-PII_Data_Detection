@@ -25,4 +25,4 @@ parameters:
   neftune_noise_alpha:
     values: [0.05]
   focal_loss_alpha:
-    values: [1.0]
+    values: [10.0]
