@@ -45,11 +45,11 @@ valid_df = pd.read_json("../kaggle_dataset/test_split.json")
 train1 = pd.read_json("../kaggle_dataset/train_split.json")
 train2 = pd.read_json("../kaggle_dataset/pjm_gpt_2k_0126_fixed.json")
 train3 = pd.read_json("../kaggle_dataset/nb_mixtral-8x7b-v1.json")
-train4 = pd.read_json(
-    "../kaggle_dataset/lzc_noise_data_1500_0206_augmented.json"
-)
+train4 = pd.read_json("../kaggle_dataset/lzc_noise_data_2000_0214.json")
 train5 = pd.read_json("../kaggle_dataset/lzc_more_data_merged.json")
-train_df = pd.concat([train1, train2, train3, train4, train5])
+train6 = pd.read_json("../kaggle_dataset/darek_persuade_train_version3.json")
+train7 = pd.read_json("../kaggle_dataset/vincent_10k_0216.json")
+train_df = pd.concat([train1, train2, train3, train4, train5, train6, train7])
 train_df = train_df.sample(frac=1, random_state=777)
 train_df.reset_index(drop=True, inplace=True)
 
@@ -635,7 +635,7 @@ def main():
         eval_steps=100,
         save_strategy="steps",
         save_steps=100,
-        save_total_limit=10,
+        save_total_limit=6,
         overwrite_output_dir=True,
         load_best_model_at_end=True,
         lr_scheduler_type="linear",
