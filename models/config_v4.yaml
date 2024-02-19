@@ -1,5 +1,5 @@
 # config.yaml
-program: hypertuning_v4_full_label.py
+program: hypertuning_v4.py
 method: grid
 name: sweep
 metric:
