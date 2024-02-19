@@ -64,7 +64,9 @@ reference_df = df[df["label"] != "O"].copy()
 reference_df = reference_df.reset_index().rename(columns={"index": "row_id"})
 reference_df = reference_df[["row_id", "document", "token", "label", "token_str"]].copy()
 
-data = json.load(open("../kaggle_dataset/mpware_mixtral8x7b_0218.json"))
+data1 = json.load(open("../kaggle_dataset/mpware_mixtral8x7b_0218.json"))
+data2 = json.load(open("../kaggle_dataset/test_split.json"))
+data = data1 + data2
 all_labels = sorted(list(set(chain(*[x["labels"] for x in data]))))
 label2id = {l: i for i, l in enumerate(all_labels)}
 id2label = {v: k for k, v in label2id.items()}
