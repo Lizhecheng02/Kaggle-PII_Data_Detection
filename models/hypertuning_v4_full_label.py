@@ -287,7 +287,7 @@ class CustomTrainer(Trainer):
         logits = outputs.get("logits")
         # compute custom focal loss
         weights = torch.tensor(
-            [self.focal_loss_alpha] * 12 + [0.1],
+            [self.focal_loss_alpha] * 14 + [0.1],
             device=model.device
         )
         sm = torch.nn.Softmax(dim=-1)
@@ -361,7 +361,7 @@ class CustomTrainer(Trainer):
         return loss.detach() / self.args.gradient_accumulation_steps
 
 
-data = json.load(open("../kaggle_dataset/test_split.json"))
+data = json.load(open("../kaggle_dataset/mpware_mixtral8x7b_0218.json"))
 all_labels = sorted(list(set(chain(*[x["labels"] for x in data]))))
 label2id = {l: i for i, l in enumerate(all_labels)}
 id2label = {v: k for k, v in label2id.items()}
