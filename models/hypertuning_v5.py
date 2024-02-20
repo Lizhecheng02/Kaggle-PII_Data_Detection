@@ -69,11 +69,11 @@ valid_df = pd.read_json("../kaggle_dataset/test_split.json")
 
 train1 = pd.read_json("../kaggle_dataset/train_split.json")
 train2 = pd.read_json("../kaggle_dataset/nb_mixtral-8x7b-v1.json")
-train3 = pd.read_json(
-    "../kaggle_dataset/Fake_data_fix_prompt_500.json")
+train3 = pd.read_json("../kaggle_dataset/znf_nb_1k_0219_mixtral.json")
+train4 = pd.read_json("../kaggle_dataset/znf_nb_2k_0219.json")
 
 
-train_df = pd.concat([train1, train2, train3])  # ,
+train_df = pd.concat([train1, train2, train3, train4])
 train_df = train_df.sample(frac=1, random_state=777)
 train_df.reset_index(drop=True, inplace=True)
 
