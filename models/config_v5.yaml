@@ -21,6 +21,6 @@ parameters:
   awp_eps:
     values: [1e-4]
   awp_start_epoch:
-    values: [0.5, 1.0]
+    values: [1.0]
   neftune_noise_alpha:
     values: [0.05]
