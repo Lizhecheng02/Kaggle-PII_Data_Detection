@@ -7,7 +7,7 @@ metric:
   name: eval/f5
 parameters:
   lr: 
-    values: [4e-6, 6e-6]
+    values: [1e-5, 6e-6]
   gradient_accumulation_steps:
     values: [16]
   batch_size:

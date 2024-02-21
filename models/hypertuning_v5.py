@@ -696,7 +696,7 @@ def main():
         eval_steps=100,
         save_strategy="steps",
         save_steps=100,
-        save_total_limit=3,
+        save_total_limit=6,
         overwrite_output_dir=True,
         load_best_model_at_end=True,
         lr_scheduler_type="linear",
@@ -727,8 +727,8 @@ def main():
         optimizer,
         num_warmup_steps=int(total_steps) * 0.1,
         num_training_steps=total_steps,
-        power=1.0,
-        lr_end=0.5e-6
+        power=2.0,
+        lr_end=1e-6
     )
 
     trainer = CustomTrainer(
