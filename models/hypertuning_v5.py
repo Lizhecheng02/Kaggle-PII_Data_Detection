@@ -727,7 +727,7 @@ def main():
         optimizer,
         num_warmup_steps=int(total_steps) * 0.1,
         num_training_steps=total_steps,
-        power=2.0,
+        power=1.5,
         lr_end=1e-6
     )
 
