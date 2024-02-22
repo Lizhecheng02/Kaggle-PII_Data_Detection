@@ -728,7 +728,7 @@ def main():
         num_warmup_steps=int(total_steps) * 0.1,
         num_training_steps=total_steps,
         power=1.5,
-        lr_end=1.5e-6
+        lr_end=3e-6
     )
 
     trainer = CustomTrainer(
