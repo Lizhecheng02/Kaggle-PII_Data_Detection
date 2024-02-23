@@ -1,3 +1,4 @@
+#wandb sweep --project PII config_v4.yaml
 from collections import defaultdict
 from typing import Dict
 from seqeval.metrics import f1_score
@@ -32,6 +33,30 @@ import wandb
 import argparse
 import json
 
+import os
+import random
+def seed_everything(seed=None):
+    '''
+
+    固定seed
+    :param seed: int, 随机种子
+    '''
+    max_seed_value = np.iinfo(np.uint32).max
+    min_seed_value = np.iinfo(np.uint32).min
+
+    if (seed is None) or not (min_seed_value <= seed <= max_seed_value):
+        seed = random.randint(np.iinfo(np.uint32).min, np.iinfo(np.uint32).max)
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    return seed
+seed_everything(42)
+
 OUTPUT_DIR = "output"  # your output path
 TRAINING_MODEL_PATH = "microsoft/deberta-v3-large"
 
@@ -39,20 +64,23 @@ TRAINING_MODEL_PATH = "microsoft/deberta-v3-large"
 valid_df = pd.read_json("../kaggle_dataset/test_split.json")
 
 train1 = pd.read_json("../kaggle_dataset/train_split.json")
-train2 = pd.read_json("../kaggle_dataset/pjm_gpt_2k_0126_fixed.json")
+train2 = pd.read_json("../kaggle_dataset/Fake_data_same_nb_1000_1.json")
 train3 = pd.read_json("../kaggle_dataset/nb_mixtral-8x7b-v1.json")
-train4 = pd.read_json("../kaggle_dataset/darek_persuade_train_version3.json")
+train4 = pd.read_json("../kaggle_dataset/Fake_data_same_nb_1000_0.json")
 
+train_more_data = pd.read_json("../kaggle_dataset/znf_no_label_2k_0223.json")
 
+#train5 = pd.read_json("../kaggle_dataset/Fake_data_fix_prompt_500_3.json")
 # train5 = pd.read_json("../kaggle_dataset/lzc_more_data_merged.json")
 # train6 = pd.read_json("../kaggle_dataset/lzc_noise_data_1500_0206_augmented.json")
 # train7 = pd.read_json("../kaggle_dataset/lzc_persuade_2.0_based_augmented.json")
 # train8 = pd.read_json("../kaggle_dataset/vw_4k_0207.json")
 
 
-train_df = pd.concat([train1, train2, train3, train4])# train6, train7, train8])
+train_df = pd.concat([train1, train2, train3, train4, train_more_data])# , 
 train_df = train_df.sample(frac=1, random_state=777)
 train_df.reset_index(drop=True, inplace=True)
+train_df.document = [i for i in range(len(train_df.document))]
 
 df = valid_df[["document", "tokens", "labels"]].copy()
 df = df.explode(["tokens", "labels"]).reset_index(drop=True).rename(
@@ -231,7 +259,8 @@ class CustomTrainer(Trainer):
         awp_eps=1e-4,
         awp_start_epoch=0.5,
         # focal_loss_alpha = 0.25,
-        focal_loss_gamma = 2
+        focal_loss_gamma = 2,
+        weights = None
     ):
 
         super().__init__(
@@ -253,6 +282,7 @@ class CustomTrainer(Trainer):
         self.awp_start_epoch = awp_start_epoch
         # self.focal_loss_alpha = focal_loss_alpha
         self.focal_loss_gamma = focal_loss_gamma
+        self.weights = weights
 
     # def compute_loss(self, model, inputs, return_outputs=False):
     #     labels = inputs.pop("labels")
@@ -283,25 +313,36 @@ class CustomTrainer(Trainer):
         wids = inputs.pop("wids")
         outputs = model(**inputs)
         logits = outputs.get("logits")
-        weights=torch.tensor([248.3889342866871,
-                              240.2892951251647,
-                              306.81679774572063,
-                              257.0536645525018,
-                              155.11764830958962,
-                              198.88721374045801,
-                              257.0536645525018,
-                              663.8019108280255,
-                              53.07517642779193,
-                              91.28106856856857,
-                              21.94964195450716,
-                              663.8019108280255,
-                              1.0138797278339764],device=model.device)
-        m = torch.nn.Softmax(dim=-1)
-        loss_fct = FocalLoss(gamma=2,weights=weights)
+        
+        # logits[torch.isnan(logits)] += 1e-7
+        
+        weights=torch.tensor(self.weights, device=model.device)
+        # weights=torch.tensor([248.3889342866871,
+        #                       240.2892951251647,
+        #                       306.81679774572063,
+        #                       257.0536645525018,
+        #                       155.11764830958962,
+        #                       198.88721374045801,
+        #                       257.0536645525018,
+        #                       663.8019108280255,
+        #                       53.07517642779193,
+        #                       91.28106856856857,
+        #                       21.94964195450716,
+        #                       663.8019108280255,
+        #                       1.0138797278339764],device=model.device)
+        # m = torch.nn.Softmax(dim=-1)
+        # loss_fct = FocalLoss(gamma=2,weights=weights)
+        # loss = loss_fct(
+        #     m(logits.view(-1, self.model.config.num_labels)),
+        #     labels.view(-1)
+        # )       
+        loss_fct = nn.CrossEntropyLoss(
+            weight=weights
+        )
         loss = loss_fct(
-            m(logits.view(-1, self.model.config.num_labels)),
+            logits.view(-1, self.model.config.num_labels),
             labels.view(-1)
-        )                   
+        )
         return (loss, outputs) if return_outputs else loss
 
     def training_step(self, model, inputs):
@@ -367,12 +408,52 @@ class CustomTrainer(Trainer):
         return loss.detach() / self.args.gradient_accumulation_steps
 
 
-data = json.load(open("../kaggle_dataset/test_split.json"))
+data1 = json.load(open("../kaggle_dataset/Fake_data_same_nb_1000_0.json"))
+data2 = json.load(open("../kaggle_dataset/test_split.json"))
+data = data1 + data2
+
 all_labels = sorted(list(set(chain(*[x["labels"] for x in data]))))
 label2id = {l: i for i, l in enumerate(all_labels)}
 id2label = {v: k for k, v in label2id.items()}
+print(f"predict lables : {all_labels}")
 print(id2label)
 
+#算权重
+t = train_df.explode(["tokens", "labels"]).reset_index(drop=True).rename(columns={"tokens": "token", "labels": "label"})
+p = (1 / (t.label.value_counts() / len(t.label))).to_dict()
+weights = []
+for i in id2label.values():
+    if i in p.keys():
+        if p[i] > 100:
+            weights.append(p[i]/10) 
+        else:
+            weights.append(p[i]) 
+    else:
+         weights.append(max(p.values())/10)
+#B-NAME_STUDENT
+weights[label2id['B-NAME_STUDENT']] = weights[label2id['B-NAME_STUDENT']] * 2
+#I-NAME_STUDENT
+weights[label2id['I-NAME_STUDENT']] = weights[label2id['I-NAME_STUDENT']] * 2
+#I-URL_PERSONAL
+weights[label2id['I-URL_PERSONAL']] = weights[label2id['I-URL_PERSONAL']] / 200
+#weights[-3] = weights[-3] / 15
+print({i:weights[idx] for idx, i in enumerate(all_labels)})
+
+'''
+['B-EMAIL',
+ 'B-ID_NUM',
+ 'B-NAME_STUDENT',
+ 'B-PHONE_NUM',
+ 'B-STREET_ADDRESS',
+ 'B-URL_PERSONAL',
+ 'B-USERNAME',
+ 'I-ID_NUM',
+ 'I-NAME_STUDENT',
+ 'I-PHONE_NUM',
+ 'I-STREET_ADDRESS',
+ 'I-URL_PERSONAL',
+ 'O']
+'''
 
 # This function is a simple map between text_split and entities
 # We have verified that we have a 1:1 mapping above
@@ -579,7 +660,7 @@ def compute_metrics_v2(p, valid_df, reference_df, valid_dataset, id2label):
 
 def main():
     # Set up your default hyperparameters
-    with open("./config_v3.yaml") as file:
+    with open("./config_v4.yaml") as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
 
     wandb.init(config=config)
@@ -693,12 +774,11 @@ def main():
     gpu_count = torch.cuda.device_count()
     print(f"Number of GPUs: {gpu_count}")
 
+    total_steps = args.num_train_epochs * int(len(train_dataset) * 1.0 / gpu_count / args.per_device_train_batch_size / args.gradient_accumulation_steps)
     scheduler = get_polynomial_decay_schedule_with_warmup(
         optimizer,
-        num_warmup_steps=25,
-        num_training_steps=args.num_train_epochs *
-        int(len(train_dataset) * 1.0 / gpu_count / args.per_device_train_batch_size /
-            args.gradient_accumulation_steps),
+        num_warmup_steps=int(total_steps) * 0.15,
+        num_training_steps=total_steps,
         power=1.0,
         lr_end=0.5e-6
     )
@@ -720,7 +800,8 @@ def main():
         awp_start_epoch=awp_start_epoch,
         optimizers=(optimizer, scheduler),
         # focal_loss_alpha=f_loss_alpha,
-        focal_loss_gamma=f_loss_gamma
+        focal_loss_gamma=f_loss_gamma,
+        weights = weights
     )
 
     trainer.train()

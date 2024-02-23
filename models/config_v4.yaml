@@ -1,5 +1,5 @@
 # config.yaml
-program: hypertuning_v3.py
+program: hypertuning_v4.py
 method: grid
 name: sweep
 metric:
@@ -15,7 +15,7 @@ parameters:
   stride:
     values: [256]
   max_length:
-    values: [1024]
+    values: [1500]
   awp_lr:
     values: [0.1]
   awp_eps:

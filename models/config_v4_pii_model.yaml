@@ -1,0 +1,32 @@
+# config.yaml
+program: hypertuning_v4_pii_model.py
+method: grid
+name: sweep
+metric:
+  goal: maximize
+  name: eval/f5
+parameters:
+  lr: 
+    values: [2e-5]
+  gradient_accumulation_steps:
+    values: [16]
+  batch_size:
+    values: [1]
+  stride:
+    values: [256]
+  max_length:
+    values: [1500]
+  awp_lr:
+    values: [0.1]
+  awp_eps:
+    values: [1e-4]
+  awp_start_epoch:
+    values: [0.5]
+  ce_weight:
+    values: [50]
+  neftune_noise_alpha:
+    values: [0.05]
+  # focal_loss_alpha:
+  #   values: [0.75, 0.50]
+  focal_loss_gamma:
+    values: [2]
