@@ -69,12 +69,21 @@ valid_df = pd.read_json("../kaggle_dataset/test_split.json")
 
 train1 = pd.read_json("../kaggle_dataset/train_split.json")
 train2 = pd.read_json("../kaggle_dataset/nb_mixtral-8x7b-v1.json")
-train3 = pd.read_json("../kaggle_dataset/znf_nb_1k_0219_mixtral.json")
-train4 = pd.read_json("../kaggle_dataset/znf_nb_2k_0219.json")
+train3 = pd.read_json("../kaggle_dataset/znf_nb_general_topic_1k_0220_mixtral.json")
+train4 = pd.read_json("../kaggle_dataset/znf_nb_general_topic_1k_0220_mixtral_2.json")
+train5 = pd.read_json("../kaggle_dataset/znf_nb_general_topic_1k_0221_mixtral.json")
+train6 = pd.read_json("../kaggle_dataset/znf_nb_lzc_general_topic_2k_0219_gpt.json")
+train7 = pd.read_json("../kaggle_dataset/znf_nb_same_2k_0223_mixtral.json")
+train8 = pd.read_json("../kaggle_dataset/no_label_1k_0222.json")
+train9 = pd.read_json("../kaggle_dataset/no_label_1k_0223.json")
+train10 = pd.read_json("../kaggle_dataset/znf_no_label_2k_0223.json")
 
 
-train_df = pd.concat([train1, train2, train3, train4])
-train_df = train_df.sample(frac=1, random_state=777)
+train_df = pd.concat([
+    train1, train2, train3, train4, train5, 
+    train6, train7, train8, train9, train10
+])
+train_df = train_df.sample(frac=1, random_state=666)
 train_df.reset_index(drop=True, inplace=True)
 
 df = valid_df[["document", "tokens", "labels"]].copy()
@@ -86,8 +95,7 @@ df["token"] = df.groupby("document").cumcount()
 label_list = df["label"].unique().tolist()
 reference_df = df[df["label"] != "O"].copy()
 reference_df = reference_df.reset_index().rename(columns={"index": "row_id"})
-reference_df = reference_df[["row_id", "document",
-                             "token", "label", "token_str"]].copy()
+reference_df = reference_df[["row_id", "document", "token", "label", "token_str"]].copy()
 
 
 class EMA:
@@ -685,7 +693,7 @@ def main():
         output_dir=f"output/{wandb.run.name}",
         fp16=True,
         gradient_accumulation_steps=ga_steps,
-        logging_steps=100,
+        logging_steps=250,
         warmup_ratio=0.05,
         learning_rate=lr,          # tune
         num_train_epochs=3,
@@ -693,9 +701,9 @@ def main():
         per_device_eval_batch_size=batch_size,
         report_to="wandb",
         evaluation_strategy="steps",
-        eval_steps=100,
+        eval_steps=250,
         save_strategy="steps",
-        save_steps=100,
+        save_steps=250,
         save_total_limit=6,
         overwrite_output_dir=True,
         load_best_model_at_end=True,

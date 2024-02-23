@@ -7,15 +7,15 @@ metric:
   name: eval/f5
 parameters:
   lr: 
-    values: [2e-5, 1e-5]
+    values: [1.5e-5, 1.0e-5]
   gradient_accumulation_steps:
     values: [16]
   batch_size:
     values: [1]
   stride:
-    values: [256, 128]
+    values: [512, 384, 256]
   max_length:
-    values: [1024, 768]
+    values: [2048]
   awp_lr:
     values: [0.1]
   awp_eps:
