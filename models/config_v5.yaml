@@ -9,11 +9,11 @@ parameters:
   lr: 
     values: [1.5e-5, 1.0e-5]
   gradient_accumulation_steps:
-    values: [16]
+    values: [8]
   batch_size:
-    values: [1]
+    values: [2]
   stride:
-    values: [512, 384, 256]
+    values: [384, 256]
   max_length:
     values: [2048]
   awp_lr:
