@@ -1,0 +1,26 @@
+# config.yaml
+program: longformer.py
+method: grid
+name: sweep
+metric:
+  goal: maximize
+  name: eval/f5
+parameters:
+  lr: 
+    values: [1.5e-5, 1.0e-5]
+  gradient_accumulation_steps:
+    values: [8]
+  batch_size:
+    values: [2]
+  stride:
+    values: [256]
+  max_length:
+    values: [4096]
+  awp_lr:
+    values: [0.1]
+  awp_eps:
+    values: [1e-4]
+  awp_start_epoch:
+    values: [1.0, 1.5]
+  neftune_noise_alpha:
+    values: [0.05]
