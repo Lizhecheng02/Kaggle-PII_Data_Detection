@@ -9,9 +9,9 @@ parameters:
   lr: 
     values: [1.5e-5, 1.0e-5]
   gradient_accumulation_steps:
-    values: [8]
+    values: [16]
   batch_size:
-    values: [2]
+    values: [1]
   stride:
     values: [256]
   max_length:
@@ -23,4 +23,6 @@ parameters:
   awp_start_epoch:
     values: [1.0, 1.5]
   neftune_noise_alpha:
-    values: [0.05]
+    values: [0.2]
+  training_model_path:
+    values: ["allenai/longformer-large-4096", "allenai/longformer-base-4096"]

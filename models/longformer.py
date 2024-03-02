@@ -20,7 +20,7 @@ from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 from transformers import get_polynomial_decay_schedule_with_warmup
 from transformers import AutoModelForTokenClassification, DataCollatorForTokenClassification
-from transformers import AutoTokenizer, Trainer, TrainingArguments, TrainerCallback
+from transformers import AutoTokenizer, Trainer, TrainingArguments, TrainerCallback, LongformerTokenizerFast
 from functools import partial
 from itertools import chain
 import yaml
@@ -60,7 +60,6 @@ def seed_everything(seed=None):
 seed_everything(42)
 
 OUTPUT_DIR = "output"  # your output path
-TRAINING_MODEL_PATH = "allenai/longformer-base-4096"
 
 # load dataset
 valid_df = pd.read_json("../kaggle_dataset/test_split.json")
@@ -627,6 +626,7 @@ def main():
     awp_eps = wandb.config.awp_eps
     awp_start_epoch = wandb.config.awp_start_epoch
     nna = wandb.config.neftune_noise_alpha
+    TRAINING_MODEL_PATH = wandb.config.training_model_path
 
     # Tokenize texts, possibly generating more than one tokenized sample for each text
 
@@ -675,7 +675,7 @@ def main():
 
         return encoded
 
-    tokenizer = AutoTokenizer.from_pretrained(TRAINING_MODEL_PATH)
+    tokenizer = LongformerTokenizerFast.from_pretrained(TRAINING_MODEL_PATH, add_prefix_space=True) #这里是和deberta不一样的地方
     tokenized_train = tokenize(train_df)
     tokenized_valid = tokenize(valid_df)
     train_dataset = PIIDataset(tokenized_train)
