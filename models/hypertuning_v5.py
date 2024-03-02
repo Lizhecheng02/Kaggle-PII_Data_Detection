@@ -32,8 +32,6 @@ import torch
 import wandb
 import argparse
 import json
-
-import os
 import random
 
 
@@ -376,21 +374,19 @@ print(f"predict lables : {all_labels}")
 print(id2label)
 
 # 算权重
-t = train_df.explode(["tokens", "labels"]).reset_index(
-    drop=True).rename(columns={"tokens": "token", "labels": "label"})
+t = train_df.explode(["tokens", "labels"]).reset_index(drop=True).rename(columns={"tokens": "token", "labels": "label"})
 p = (1 / (t.label.value_counts() / len(t.label))).to_dict()
 weights = []
 for i in id2label.values():
     if i in p.keys():
         if p[i] > 100:
-            weights.append(p[i]/10)
+            weights.append(p[i] / 10)
         else:
             weights.append(p[i])
     else:
-        weights.append(max(p.values())/10)
+        weights.append(max(p.values()) / 10)
 weights[2] = weights[2] * 10
 weights[-2] = weights[-2] / 200
-# weights[-3] = weights[-3] / 15
 print({i: weights[idx] for idx, i in enumerate(all_labels)})
 
 '''
