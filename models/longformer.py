@@ -374,8 +374,7 @@ print(f"predict lables : {all_labels}")
 print(id2label)
 
 # 算权重
-t = train_df.explode(["tokens", "labels"]).reset_index(
-    drop=True).rename(columns={"tokens": "token", "labels": "label"})
+t = train_df.explode(["tokens", "labels"]).reset_index(drop=True).rename(columns={"tokens": "token", "labels": "label"})
 p = (1 / (t.label.value_counts() / len(t.label))).to_dict()
 weights = []
 for i in id2label.values():
