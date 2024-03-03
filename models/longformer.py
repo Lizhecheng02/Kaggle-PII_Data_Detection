@@ -706,7 +706,8 @@ def main():
         weight_decay=0.01,
         save_only_model=True,
         neftune_noise_alpha=nna,
-        remove_unused_columns=False
+        remove_unused_columns=False,
+        max_grad_norm=1.0
     )
 
     model = AutoModelForTokenClassification.from_pretrained(
