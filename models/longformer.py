@@ -572,8 +572,7 @@ def compute_metrics_v2(p, valid_df, reference_df, valid_dataset, id2label):
 
     preds, labels = p
     assert preds.shape[0] == len(valid_dataset)
-    preds_softmax = np.exp(preds) / np.sum(np.exp(preds),
-                                           axis=2).reshape(preds.shape[0], preds.shape[1], 1)
+    preds_softmax = np.exp(preds) / np.sum(np.exp(preds), axis=2).reshape(preds.shape[0], preds.shape[1], 1)
 
     for preds, batch in zip(preds_softmax, valid_dataset):
         word_ids = batch["wids"].numpy()

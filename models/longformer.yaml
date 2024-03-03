@@ -7,7 +7,7 @@ metric:
   name: eval/f5
 parameters:
   lr: 
-    values: [1.5e-5, 1.0e-5]
+    values: [1.25e-5, 1.0e-5]
   gradient_accumulation_steps:
     values: [16]
   batch_size:
@@ -25,4 +25,4 @@ parameters:
   neftune_noise_alpha:
     values: [0.1]
   training_model_path:
-    values: ["allenai/longformer-large-4096", "allenai/longformer-base-4096"]
+    values: ["allenai/longformer-base-4096", "allenai/longformer-large-4096"]
