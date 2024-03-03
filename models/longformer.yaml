@@ -23,6 +23,6 @@ parameters:
   awp_start_epoch:
     values: [1.0, 1.5]
   neftune_noise_alpha:
-    values: [0.2]
+    values: [0.1]
   training_model_path:
     values: ["allenai/longformer-large-4096", "allenai/longformer-base-4096"]

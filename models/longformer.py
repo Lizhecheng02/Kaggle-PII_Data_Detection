@@ -670,8 +670,7 @@ def main():
             )
 
         if to_tensor:
-            encoded = {key: torch.as_tensor(val)
-                       for key, val in encoded.items()}
+            encoded = {key: torch.as_tensor(val) for key, val in encoded.items()}
 
         return encoded
 
@@ -703,7 +702,6 @@ def main():
         save_total_limit=6,
         overwrite_output_dir=True,
         load_best_model_at_end=True,
-        lr_scheduler_type="linear",
         metric_for_best_model="f5",
         greater_is_better=True,
         weight_decay=0.01,
