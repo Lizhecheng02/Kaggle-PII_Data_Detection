@@ -19,7 +19,7 @@ from copy import deepcopy
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 from transformers import get_polynomial_decay_schedule_with_warmup
-from transformers import AutoModelForTokenClassification, DataCollatorForTokenClassification
+from transformers import AutoModelForTokenClassification, DataCollatorForTokenClassification, RobertaForTokenClassification
 from transformers import AutoTokenizer, Trainer, TrainingArguments, TrainerCallback
 from functools import partial
 from itertools import chain
@@ -674,7 +674,7 @@ def main():
 
         return encoded
 
-    tokenizer = AutoTokenizer.from_pretrained(TRAINING_MODEL_PATH) #这里是和deberta不一样的地方
+    tokenizer = AutoTokenizer.from_pretrained("Jean-Baptiste/roberta-large-ner-english")
     tokenized_train = tokenize(train_df)
     tokenized_valid = tokenize(valid_df)
     train_dataset = PIIDataset(tokenized_train)
@@ -711,7 +711,7 @@ def main():
         max_grad_norm=1.0
     )
 
-    model = AutoModelForTokenClassification.from_pretrained(
+    model = RobertaForTokenClassification.from_pretrained(
         TRAINING_MODEL_PATH,
         num_labels=len(all_labels),
         id2label=id2label,

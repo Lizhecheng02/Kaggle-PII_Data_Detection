@@ -15,7 +15,7 @@ parameters:
   stride:
     values: [256]
   max_length:
-    values: [2048]
+    values: [1024]
   awp_lr:
     values: [0.1]
   awp_eps:
