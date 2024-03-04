@@ -13,9 +13,9 @@ parameters:
   batch_size:
     values: [1]
   stride:
-    values: [256]
+    values: [128]
   max_length:
-    values: [1024]
+    values: [512]
   awp_lr:
     values: [0.1]
   awp_eps:
