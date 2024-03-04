@@ -557,8 +557,7 @@ def create_val_df(df, fold):
     val_df = df[df["fold"] == fold].reset_index(drop=True).copy()
 
     val_df = val_df[["document", "tokens", "labels"]].copy()
-    val_df = val_df.explode(["tokens", "labels"]).reset_index(
-        drop=True).rename(columns={"tokens": "token", "labels": "label"})
+    val_df = val_df.explode(["tokens", "labels"]).reset_index(drop=True).rename(columns={"tokens": "token", "labels": "label"})
     val_df["token"] = val_df.groupby("document").cumcount()
 
     label_list = val_df["label"].unique().tolist()
@@ -585,9 +584,7 @@ for fold in range(-1, Config.NFOLDS):
             continue
         if len(train_ds_list) >= 0:
             print(len(train_ds_list))
-            train_ds_list.append(
-                load_from_disk(f"{Config.save_dir}_fold_{i}.dataset")
-            )
+            train_ds_list.append(load_from_disk(f"{Config.save_dir}_fold_{i}.dataset"))
 
     keep_cols = {"input_ids", "attention_mask", "labels"}
     train_ds = concatenate_datasets(train_ds_list).sort("length")
@@ -595,15 +592,11 @@ for fold in range(-1, Config.NFOLDS):
     train_ds = train_ds.remove_columns(
         [c for c in train_ds.column_names if c not in keep_cols]
     )
-    valid_ds = load_from_disk(
-        f"{Config.save_dir}_fold_{fold}.dataset"
-    ).sort("length")
+    valid_ds = load_from_disk(f"{Config.save_dir}_fold_{fold}.dataset").sort("length")
     valid_ds = valid_ds.remove_columns(
         [c for c in valid_ds.column_names if c not in keep_cols]
     )
-    val_ds = load_from_disk(
-        f"{Config.save_dir}_fold_{fold}.dataset"
-    ).sort("length")
+    val_ds = load_from_disk(f"{Config.save_dir}_fold_{fold}.dataset").sort("length")
 
     true_val_df = create_val_df(df_train, fold)
 
