@@ -685,7 +685,7 @@ def main():
 
     args = TrainingArguments(
         output_dir=f"output/{wandb.run.name}",
-        fp16=True,
+        fp16=False, 
         gradient_accumulation_steps=ga_steps,
         logging_steps=100,
         warmup_ratio=0.05,
