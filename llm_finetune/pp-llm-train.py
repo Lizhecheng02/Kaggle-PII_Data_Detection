@@ -35,7 +35,6 @@ bnb_config = BitsAndBytesConfig(
 model = AutoModelForCausalLM.from_pretrained(
     base_model,
     quantization_config=bnb_config,
-    load_in_4bit=True,
     torch_dtype=torch.bfloat16,
     device_map="auto",
     trust_remote_code=True
@@ -99,5 +98,3 @@ trainer = SFTTrainer(
 
 trainer.train()
 trainer.model.save_pretrained(new_model)
-model.config.use_cache = True
-model.eval()

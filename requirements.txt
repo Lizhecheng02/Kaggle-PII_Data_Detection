@@ -13,3 +13,6 @@ openai
 wandb
 faker
 focal_loss_torch
+peft
+trl
+bitsandbytes
