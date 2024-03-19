@@ -8,6 +8,7 @@ df3 = pd.read_json("test_other_name.json")
 df4 = pd.read_json("train_other_name.json")
 
 df = pd.concat([df1, df2, df3, df4])
+df = df[:1000]
 df = df.reset_index(drop=True)
 print(df.shape)
 
@@ -30,6 +31,9 @@ non_name_i_labels = [
 ]
 
 for idx, row in tqdm(df.iterrows(), total=len(df)):
+    if idx == 875 or idx == 876:
+        continue
+
     full_text = row["full_text"]
     student_name_dict = {}
     other_name_dict = {}
