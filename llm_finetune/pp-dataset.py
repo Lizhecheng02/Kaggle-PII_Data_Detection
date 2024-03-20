@@ -40,8 +40,7 @@ for idx, row in tqdm(df.iterrows(), total=len(df)):
     entity = row["entity"]
     label_output = row["label output"]
 
-    text = system_prompt + "\n" + full_text + "\n" + \
-        question_prompt.format(entity, entity) + "[/INST] " + label_output
+    text = "<s>[INST]" + system_prompt + "\n" + full_text + "\n" + question_prompt.format(entity, entity) + "[/INST]" + label_output + "</s>"
     if idx == 0:
         print(text)
     texts.append(text)

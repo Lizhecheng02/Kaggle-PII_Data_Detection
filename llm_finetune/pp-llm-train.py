@@ -1,6 +1,7 @@
 import os
 import torch
 import warnings
+import wandb
 import pandas as pd
 from transformers import (
     AutoModelForCausalLM,
@@ -16,7 +17,7 @@ from trl import SFTTrainer
 from sklearn.model_selection import train_test_split
 
 df = pd.read_csv("llm_train.csv")
-train_data, test_data = train_test_split(df, test_size=0.15, random_state=1)
+train_data, test_data = train_test_split(df, test_size=0.20, random_state=1)
 train_dataset = Dataset.from_pandas(train_data)
 test_dataset = Dataset.from_pandas(test_data)
 print(train_dataset)
@@ -46,12 +47,14 @@ model.gradient_checkpointing_enable()
 tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
 tokenizer.pad_token = tokenizer.eos_token
 tokenizer.add_eos_token = True
+tokenizer.add_bos_token = True
+# tokenizer.padding_side = "right"
 
 model = prepare_model_for_kbit_training(model=model)
 peft_config = LoraConfig(
     r=64,
     lora_alpha=16,
-    lora_dropout=0.05,
+    lora_dropout=0.10,
     bias="none",
     task_type="CAUSAL_LM",
     target_modules=[
@@ -62,26 +65,34 @@ peft_config = LoraConfig(
 model = get_peft_model(model=model, peft_config=peft_config)
 print(model)
 
+wandb.login(key="c465dd55c08ec111e077cf0454ba111b3a764a78")
+run = wandb.init(
+    project="piidd mistral 7B 2",
+    job_type="training",
+    anonymous="allow"
+)
+
 training_arguments = TrainingArguments(
     output_dir="output",
-    num_train_epochs=2,
+    num_train_epochs=3,
     per_device_train_batch_size=1,
     gradient_accumulation_steps=8,
     per_device_eval_batch_size=1,
     optim="paged_adamw_8bit",
     save_steps=50,
-    logging_steps=25,
+    logging_steps=50,
     eval_steps=50,
     learning_rate=2e-4,
     weight_decay=0.001,
-    fp16=False,
-    bf16=False,
+    fp16=True,
     max_grad_norm=1.0,
     max_steps=-1,
-    warmup_ratio=0.05,
+    warmup_ratio=0.1,
     group_by_length=True,
     lr_scheduler_type="cosine",
-    report_to="none"
+    save_total_limit=10,
+    save_only_model=True,
+    report_to="wandb"
 )
 
 trainer = SFTTrainer(
@@ -98,3 +109,4 @@ trainer = SFTTrainer(
 
 trainer.train()
 trainer.model.save_pretrained(new_model)
+wandb.finish()
