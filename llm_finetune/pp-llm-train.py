@@ -67,7 +67,7 @@ print(model)
 
 wandb.login(key="c465dd55c08ec111e077cf0454ba111b3a764a78")
 run = wandb.init(
-    project="piidd mistral 7B 2",
+    project="piidd mistral 7B",
     job_type="training",
     anonymous="allow"
 )
