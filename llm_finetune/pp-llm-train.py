@@ -65,7 +65,7 @@ peft_config = LoraConfig(
 model = get_peft_model(model=model, peft_config=peft_config)
 print(model)
 
-wandb.login(key="c465dd55c08ec111e077cf0454ba111b3a764a78")
+wandb.login(key="")
 run = wandb.init(
     project="piidd mistral 7B",
     job_type="training",
