@@ -52,6 +52,19 @@ wandb sweep --project PII config.yaml
 wandb agent xxx/PII/xxxxxxxx
 ```
 
+#### 5. Four-Fold Cross Validation
+
+```
+cd kfold
+wandb login --relogin
+(input your wandb api key)
+wandb init -e (input your wandb username)
+
+export KFOLD=0/1/2/3
+wandb sweep --project PII hypertuning_kfold.yaml
+wandb agent xxx/PII/xxxxxxxx
+```
+
 
 
 ## This is [Public 9th Private 28th Solution] For [The Learning Agency Lab - PII Data Detection](https://www.kaggle.com/competitions/pii-detection-removal-from-educational-data)
@@ -229,7 +242,7 @@ We have annotated approximately 10,000 non-student names from the dataset using 
 
 I tried fine-tuning the ``Mistral-7b`` model on name-related labels, but the scores on the LB showed a significant decrease.
 
-Therefore, I tried using ``Mistral-7b`` for few-shot learning to determine whether the content predicted to have the label ``name student`` is actually a name. (Here we cannot expect the model to distinguish whether it is a student's name or not, but only to exclude predictions that are clearly not names).
+Therefore, I tried using ``Mistral-7b`` for few-shot learning to determine whether the content predicted to be the label ``name student`` is actually a name. (Here we cannot expect the model to distinguish whether it is a student's name or not, but only to exclude predictions that are clearly not names).
 
 The prompt is in the below, doing this produced a very slight improvement on the LB, less than 0.001.
 
