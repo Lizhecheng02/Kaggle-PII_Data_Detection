@@ -67,7 +67,7 @@ wandb agent xxx/PII/xxxxxxxx
 
 
 
-## This is [Public 9th Private 28th Solution] For [The Learning Agency Lab - PII Data Detection](https://www.kaggle.com/competitions/pii-detection-removal-from-educational-data)
+## This is [Public 9th Private 25th Solution] For [The Learning Agency Lab - PII Data Detection](https://www.kaggle.com/competitions/pii-detection-removal-from-educational-data)
 
 First of all, thank you to ``Kaggle`` and ``THE LEARNING AGENCY LAB`` for hosting this competition, and thanks to everyone in the team for their efforts. Although the result was not perfect, we still learned a lot, and we will continue to move forward. Congratulations to all the winners!
 
@@ -254,7 +254,7 @@ f"I'll give you a name, and you need to tell me if it's a normal person name, ci
 
 | Models                                                       | LB        | PB        | Choose  |
 | ------------------------------------------------------------ | --------- | --------- | ------- |
-| ``Seven individual models that exceed 0.974 on the LB``      | ``0.978`` | ``0.964`` | **Yes** |
+| ``Seven single models that exceed 0.974 on the LB``          | ``0.978`` | ``0.964`` | **Yes** |
 | ``Two 4-fold cross-validation models, with LB scores of 0.977 and 0.974 respectively.`` | ``0.978`` | ``0.961`` | **Yes** |
 | ``Three single models with ensemble LB score of 0.979, plus one set of 4-fold cross-validation models with an LB score of 0.977. (Use vote ensemble)`` | ``0.979`` | ``0.963`` | **Yes** |
 | ``Two single models ensemble``                               | ``0.972`` | ``0.967`` | **No**  |
@@ -273,4 +273,3 @@ f"I'll give you a name, and you need to tell me if it's a normal person name, ci
 Thanks to my teammates, we have known each other through Kaggle for over half a year. I feel fortunate to be able to learn and progress together with you all. [@rdxsun](https://www.kaggle.com/rdxsun), [@bianshengtao](https://www.kaggle.com/bianshengtao), [@xuanmingzhang777](https://www.kaggle.com/xuanmingzhang777), [@tonyarobertson](https://www.kaggle.com/tonyarobertson).
 
 Going beyond is just as wrong as not going far enough.   ——Confucius 
-
